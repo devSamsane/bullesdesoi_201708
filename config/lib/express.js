@@ -86,8 +86,6 @@ module.exports.initMiddleware = function(app) {
  * @param app
  */
 module.exports.initViewEngine = function(app) {
-  // app.set('views', path.join(__dirname, 'dist/index.html'));
-  // app.set('view engine', 'html');
   app.get('*', function (req, res) {
     res.sendFile(path.resolve('./dist/index.html)'));
   });
@@ -97,10 +95,11 @@ module.exports.initViewEngine = function(app) {
  * Initialisation et export des modules de configuration server
  * @name initModulesConfiguration
  * @param app
+ * @param db
  */
-module.exports.initModulesConfiguration = function(app) {
+module.exports.initModulesConfiguration = function(app, db) {
   config.files.server.configs.forEach(function(configPath) {
-    require(path.resolve(configPath))(app);
+    require(path.resolve(configPath))(app, db);
   });
 };
 
@@ -155,7 +154,7 @@ module.exports.initErrorRoutes = function (app) {
  * @name init
  * @returns {*} app express
  */
-module.exports.init = function() {
+module.exports.init = function(db) {
   const app = express();
 
   // Initialisation des variables ExpressJS app.locals
