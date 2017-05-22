@@ -3,24 +3,36 @@ const chalk = require('chalk');
 
 // Déclaration des fichiers de configuration
 const config = require('../config');
+const mongooseConfig = require('./mongoose');
 const express = require('./express');
+
+// Chargement des models mongoose
+mongooseConfig.loadModels();
 
 /**
  * Déclaration du module d'initialisation du démarrage de l'application
  * @param callback
  */
 module.exports.init = function init(callback) {
-  const app = express.init();
-
-  if (callback) {
-    callback(app, config);
-  }
+  // Connexion à la base de donnée et initialisation de l'application express
+  mongooseConfig.connect(function(db) {
+    // Initialisation de l'application express
+    const app = express.init(db);
+    if (callback) {
+      callback(app, db, config);
+    }
+  });
 };
 
+/**
+ * Démarrage du server, passage de l'application express et de la config statique
+ * @name start
+ * @param callback
+ */
 exports.start = function start(callback) {
   let _this = this;
 
-  _this.init(function(app, config) {
+  _this.init(function(app, db, config) {
 
     // Démarrage de l'application server sur le port et host de la config
     app.listen(config.port, config.host, function() {
@@ -32,8 +44,7 @@ exports.start = function start(callback) {
       console.log();
       console.log(chalk.green('Environnement: ' + process.env.NODE_ENV));
       console.log(chalk.green('Serveur: ' + server));
-      // TODO: Réactiver la console à la mise en place de la config mongoose
-      // console.log(chalk.green('Database: ' + config.db.uri));
+      console.log(chalk.green('MongoDB: ' + config.db.uri));
       console.log(chalk.green('Version de l\'application: ' + config.bullesdesoi.version));
 
       if (config.bullesdesoi['bullesdesoi-version']) {
@@ -41,7 +52,7 @@ exports.start = function start(callback) {
       }
 
       if (callback) {
-        callback(app, config);
+        callback(app, db, config);
       }
 
     });
