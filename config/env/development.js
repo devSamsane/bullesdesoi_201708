@@ -19,6 +19,18 @@ module.exports = {
     debug: process.env.MONGODB_DEBUG || false
   },
 
+  // Déclaration de la configuration du logger
+  log: {
+    format: 'dev',
+    fileLogger: {
+      directoryPath: (process.cwd(), './logs/'),
+      fileName: 'app-bullesdesoi.log',
+      maxsize: '10485760',
+      maxFile: 2,
+      json: false
+    }
+  },
+
   // Définition du domaine de développement
   domain: process.env.DOMAIN || 'localhost'
 };
