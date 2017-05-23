@@ -3,6 +3,7 @@ const path = require('path');
 
 // Déclaration des librairies
 const express = require('express');
+const morgan = require('morgan');
 const chalk = require('chalk');
 const _ = require('lodash');
 const compress = require('compression');
@@ -13,6 +14,7 @@ const helmet = require('helmet');
 
 // Déclaration des fichiers de configuration
 const config = require('../config');
+const logger = require('./logger');
 const coreRoutes = require(path.resolve('./server/routes/core.server.routes'));
 
 /**
@@ -48,7 +50,6 @@ module.exports.initMiddleware = function(app) {
   // Middleware: Compression
   app.use(compress({
     filter: function(req, res) {
-
       return (/json|text|javascript|css|font|svg/).test(res.getHeader('Content-Type'));
     },
     level: 9
@@ -57,6 +58,12 @@ module.exports.initMiddleware = function(app) {
   // Middleware: Initialisation favicon
   // TODO: A réactiver dès que le favicon est mis à la bonne place
   // app.use(favicon(app.locals.favicon));
+
+  // Middleware: Initialisation du logger
+  // Activé uniquement si log-format est déclaré dans config
+  if (_.has(config, 'log-format')) {
+    app.use(morgan(logger.getLogFormat(), logger.getMorganOptions()));
+  }
 
   // Middleware: Cache
   // Si NODE_ENV = development, désactivation du cache
