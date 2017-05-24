@@ -65,7 +65,7 @@ logger.getLogOptions = function getLogOptions() {
   const _config = _.clone(config, true);
   const configFileLogger = _config.log.fileLogger;
 
-  if (!_.has(_config, 'log.fileLogger.directoryPath') || !_.has(_config, 'log.fileLogger.filename')) {
+  if (!_.has(_config, 'log.fileLogger.directoryPath') || !_.has(_config, 'log.fileLogger.fileName')) {
     console.log('Impossible de trouver le fichier de configuration du logger');
     return false;
   }

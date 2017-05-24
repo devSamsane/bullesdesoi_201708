@@ -23,7 +23,7 @@ module.exports = {
   log: {
     format: 'dev',
     fileLogger: {
-      directoryPath: (process.cwd(), './logs/'),
+      directoryPath: (process.cwd(), 'logs/'),
       fileName: 'app-bullesdesoi.log',
       maxsize: '10485760',
       maxFile: 2,
