@@ -1,1 +1,150 @@
 /* You can add global styles to this file, and also import other style files */
+@import 'theme.scss';
+
+/*
+* Primary: DEEP-PURPLE
+* P: {
+  color: {
+    material: 500,
+    hex: #673ab7
+    },
+  Text: {
+    White: {
+      Normal: min 71 % opacity,
+      Large: min 50% opacity
+    },
+    Black: {
+      Normal: Not Legible,
+      Large: Not Legible
+      }
+  }
+*P-Light: {
+  color: {
+    material: Not Legible,
+    hex: #9a67ea
+    },
+  Text: {
+    White: {
+      Normal: Not Legible,
+      Large: min 80% opacity
+    },
+    Black: {
+      Normal: min 79% opacity,
+      Large: min 56% opacity
+      }
+  }
+*P-Dark: {
+  color: {
+    material: Not Legible,
+    hex: #320b86
+    },
+  Text: {
+    White: {
+      Normal: min 82% opacity,
+      Large: min 38% opacity
+    },
+    Black: {
+      Normal: Not Legible,
+      Large: Not Legible
+      }
+  }
+}
+*/
+
+/*
+* Secondary: LIME
+* S: {
+    color: {
+    material: 500,
+    hex: #cddc39
+    },
+  Text: {
+    White: {
+      Normal: Not Legible,
+      Large: Not Legible
+    },
+    Black: {
+      Normal: min 57% opacity,
+      Large: min 44% opacity
+    }
+  }
+* S-Light: {
+  color: {
+    material: Not Legible,
+    hex: #ffff6e
+    },
+  Text: {
+    White: {
+      Normal: Not Legible,
+      Large: Not Legible
+    },
+    Black: {
+      Normal: min 54% opacity,
+      Large: min 42% opacity
+    }
+  }
+* S-Dark: {
+  color: {
+    material: Not Legible,
+    hex: #99aa00
+    },
+  Text: {
+    White: {
+      Normal: Not Legible,
+      Large: Not Legible
+    },
+    Black: {
+      Normal: min 65% opacity,
+      Large: min 49% opacity
+    }
+}
+*/
+
+/*
+* Warn: PINK
+* W: {
+    color: {
+    material: 500,
+    hex: #e91e63
+    },
+  Text: {
+    White: {
+      Normal: Not Legible,
+      Large: min 77% opacity
+    },
+    Black: {
+      Normal: min 88% opacity,
+      Large: min 59% opacity
+    }
+  }
+* W-Light: {
+  color: {
+    material: Not Legible,
+    hex: #ff6090
+    },
+  Text: {
+    White: {
+      Normal: Not Legible,
+      Large: Not Legible
+    },
+    Black: {
+      Normal: min 67% opacity,
+      Large: min 50% opacity
+    }
+  }
+* W-Dark: {
+  color: {
+    material: Not Legible,
+    hex: #b0003a
+    },
+  Text: {
+    White: {
+      Normal: min 76% opacity,
+      Large: min 57% opacity
+    },
+    Black: {
+      Normal: Not Legible,
+      Large: Not Legible
+    }
+}
+*/

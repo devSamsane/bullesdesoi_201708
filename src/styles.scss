@@ -1,0 +1,16 @@
+@import '~@angular/material/_theming.scss';
+
+@include mat-core();
+
+$bds-app-primary: mat-palette($mat-deep-purple);
+$bds-app-accent:  mat-palette($mat-lime);
+$bds-app-warn:  mat-palette($mat-pink);
+
+$bds-app-theme: mat-light-theme($bds-app-primary, $bds-app-accent, $bds-app-warn);
+
+@include angular-material-theme($bds-app-theme);
+
+.md-display-1 {
+  font-family: 'Roboto', regular;
+  font-size: 34px;
+}
