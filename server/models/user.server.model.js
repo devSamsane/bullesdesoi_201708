@@ -98,10 +98,6 @@ const UserSchema = new Schema({
     type: Date,
     default: ''
   },
-  lastConnexion: {
-    type: Date,
-    default: ''
-  },
   hasResetInProgress: {
     type: Boolean,
     default: false
