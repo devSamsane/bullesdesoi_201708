@@ -40,5 +40,29 @@ module.exports = {
   },
 
   // Définition du domaine de développement
-  domain: process.env.DOMAIN || 'localhost'
+  domain: process.env.DOMAIN || 'localhost',
+
+  // Configuration seed
+  seedDB: {
+    seed: process.env.MONGO_SEED === 'true',
+    options: {
+      logResults: process.env.MONGO_SEED_LOG_RESULTS !== 'false',
+      seedUser: {
+        provider: 'local',
+        email: process.env.MONGO_SEED_USER_EMAIL || 'user@localhost.com',
+        firstname: 'User',
+        lastname: 'Local',
+        displayName: 'User Local',
+        roles: ['user']
+      },
+      seedAdmin: {
+        provider: 'local',
+        email: process.env.MONGO_SEED_ADMIN_EMAIL || 'admin@localhost.com',
+        firstname: 'Admin',
+        lastname: 'Local',
+        displayName: 'Admin Local',
+        roles: ['user', 'admin']
+      }
+    }
+  }
 };

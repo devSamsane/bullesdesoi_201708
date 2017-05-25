@@ -5,9 +5,18 @@ const chalk = require('chalk');
 const config = require('../config');
 const mongooseConfig = require('./mongoose');
 const express = require('./express');
+const seed = require('./seed');
+
+// Initialisation de le fonction seed
+function seedDB() {
+  if (config.seedDB && config.seedDB.seed) {
+    console.log(chalk.bold.blue('Information: La fonction seed est active'));
+    seed.start();
+  }
+};
 
 // Chargement des models mongoose
-mongooseConfig.loadModels();
+mongooseConfig.loadModels(seedDB);
 
 /**
  * Déclaration du module d'initialisation du démarrage de l'application
