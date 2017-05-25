@@ -37,5 +37,16 @@ module.exports = {
 
   // Définition des fichiers statiques
   logo: 'src/assets/img/brand/logo.png',
-  favicon: 'src/assets/img/brand/favicon.ico'
+  favicon: 'src/assets/img/brand/favicon.ico',
+
+  // Spécification des paramètres partagés
+  shared: {
+    owasp: {
+      allowPassphrase: true,
+      maxLength: 128,
+      minLength: 8,
+      minPhraseLength: 12,
+      minOptionalTestsToPass: 4
+    }
+  }
 };

@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "ng": "ng",
-    "start:server": "NODE_ENV=development nodemon ./server.js",
+    "start:server": "NODE_ENV=development MONGO_SEED=true nodemon ./server.js",
     "start": "ng serve",
     "build": "ng build",
     "test": "ng test",

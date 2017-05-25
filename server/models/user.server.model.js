@@ -6,6 +6,8 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const uniqueValidator = require('mongoose-unique-validator');
 const bcrypt = require('bcryptjs');
+const owasp = require('owasp-password-strength-test');
+const generatePassword = require('generate-password');
 const Schema = mongoose.Schema;
 
 // Déclaration des fichiers de configuration
@@ -143,6 +145,41 @@ UserSchema.pre('save', function (next) {
   }
   next();
 });
+
+/**
+ * Génération d'une passphrase respectant les règles de l'owasp
+ * Seuls sont pris en compte les tests requis de l'owasp, pas les optionnels
+ * @name {generateRandomPassphrase}
+ * @return {Promise}
+ */
+UserSchema.statics.generateRandomPassphrase = function () {
+  return new Promise(function (resolve, reject) {
+    let password = '';
+    const repeatingCharacters = new RegExp('(.)\\1{2,}', 'g');
+
+    // Itération tant que la passphrase ne répond pas aux tests
+    while (password.length < 20 || repeatingCharacters.test(password)) {
+      // Construction de la passphrase entre minPhraseLength et (minPhraseLength)x2 caractères
+      password = generatePassword.generate({
+        length: Math.floor(Math.random() * (config.shared.owasp.minPhraseLength)) + config.shared.owasp.minPhraseLength,
+        numbers: true,
+        symbols: true,
+        uppercase: true,
+        excludeSimilarCharacters: true
+      });
+
+      // Vérification de la nécessité de supprimer les caractères répétitifs
+      password = password.replace(repeatingCharacters, '');
+    }
+
+    // Envoi de l'erreur si la passphrase ne passe pas les tests owasp
+    if (owasp.test(password).errors.length) {
+      reject(new Error('Un problème est survenu pendant la génération de la passphrase'));
+    } else {
+      resolve(password);
+    }
+  });
+};
 
 // Création du model User
 mongoose.model('User', UserSchema);
