@@ -5,6 +5,7 @@ const path = require('path');
 const mongoose = require('mongoose');
 const validator = require('validator');
 const uniqueValidator = require('mongoose-unique-validator');
+const bcrypt = require('bcryptjs');
 const Schema = mongoose.Schema;
 
 // Déclaration des fichiers de configuration
@@ -122,6 +123,26 @@ const UserSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Seance'
   }]
+});
+
+/**
+ * Méthode 'pre' save: hashage du mot de passe
+ * On ne sauvegarde pas le sel
+ * TODO: Regarder la différence entre le hashSync et hash
+ */
+UserSchema.pre('save', function (next) {
+  // Vérification que le user modifie son mot de passe
+  if (this.password && this.isModified('password')) {
+    // Création du sel
+    const salt = bcrypt.genSalt(10);
+    // Hashage du mot de passe
+    // Utilisation de la fonction synchrone du sel du mot de passe
+    const hash = bcrypt.hashSync(this.password, salt);
+
+    // Sauvegarde du hash
+    this.password = hash;
+  }
+  next();
 });
 
 // Création du model User

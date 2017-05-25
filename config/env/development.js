@@ -31,6 +31,14 @@ module.exports = {
     }
   },
 
+  // Configuration des paramètres du json web token
+  jwt: {
+    secret: process.env.JWT_SECRET || 'secret',
+    options: {
+      expiresIn: process.env.JWT_EXPIRES_IN || '1d'
+    }
+  },
+
   // Définition du domaine de développement
   domain: process.env.DOMAIN || 'localhost'
 };

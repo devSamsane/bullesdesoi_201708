@@ -15,7 +15,10 @@ const helmet = require('helmet');
 // Déclaration des fichiers de configuration
 const config = require('../config');
 const logger = require('./logger');
+const authorization = require('./authorization');
+// const router = express.Router();
 const coreRoutes = require(path.resolve('./server/routes/core.server.routes'));
+const authRoutes = require(path.resolve('./server/routes/auth.server.routes'));
 
 /**
  * Initialisation et export des variables utilisées par ExpressJS
@@ -83,8 +86,19 @@ module.exports.initMiddleware = function(app) {
   // Middleware: Initialisation cookie-parser
   app.use(cookieParser());
 
+  // Middleware: Initialisation de l'autorisation Third-Party
+  app.use(authorization.authorize);
+
   // Middleware: Initialisation du répertoire statique
   app.use(express.static(path.resolve('./dist')));
+
+  app.use('./api/auth/signup', authRoutes);
+  app.use('*', coreRoutes);
+  // app.get('/', function (req, res) {
+  //   res.sendFile(path.resolve('./dist/index.html'));
+  // });
+
+
 };
 
 /**
@@ -93,7 +107,7 @@ module.exports.initMiddleware = function(app) {
  * @param app
  */
 module.exports.initViewEngine = function(app) {
-  app.get('*', function (req, res) {
+  app.get('/', function (req, res) {
     res.sendFile(path.resolve('./dist/index.html)'));
   });
 };
@@ -135,7 +149,11 @@ module.exports.initHelmetHeaders = function (app) {
  * @param app
  */
 module.exports.initModulesServerRoutes = function(app) {
-  app.use('/', coreRoutes);
+  console.log(config.files.server.routes);
+  config.files.server.routes.forEach(function (routePath) {
+    console.log('path: ' + routePath);
+    require(path.resolve(routePath))(app);
+  });
 };
 
 /**
@@ -152,7 +170,7 @@ module.exports.initErrorRoutes = function (app) {
     }
     // TODO: Retirer la console quand le développement sera terminé
     console.error(err.stack);
-    return res.render('index');
+    return res.sendFile(path.resolve('./dist/index.html'));
   });
 };
 
@@ -180,7 +198,7 @@ module.exports.init = function(db) {
   this.initModulesConfiguration(app);
 
   // Initialisation des routes server
-  this.initModulesServerRoutes(app);
+  // this.initModulesServerRoutes(app);
 
   // Initialisation des routes error
   this.initErrorRoutes(app);
