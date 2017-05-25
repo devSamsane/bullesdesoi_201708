@@ -124,6 +124,21 @@ const UserSchema = new Schema({
 });
 
 /**
+ * Méthode 'pre' validate: vérification de la longueur du mot de passe avant enregistrement
+ */
+UserSchema.pre('validate', function (next) {
+  // Filtrage du provider, la fonction n'est appliquée aur pour le provider local
+  if (this.provider === 'local' && this.password && this.isModified('password')) {
+    const result = owasp.test(this.password);
+    if (result.errors.length) {
+      const error = result.errors.join(' ');
+      this.invalidate('password', error);
+    }
+  }
+  next();
+});
+
+/**
  * Méthode 'pre' save: hashage du mot de passe
  * On ne sauvegarde pas le sel
  * TODO: Regarder la différence entre le hashSync et hash
