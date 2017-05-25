@@ -85,13 +85,6 @@ exports.signin = function (req, res, next) {
       // Suppression des valeurs sensibles une fois l'auth effectuée
       user.password = undefined;
 
-      // Mise à jour du champ lastConnexion
-      // TODO: Trouver un moyen de mettre à jour le champs
-      // user.lastConnexion = Date.now();
-      // console.log(user._id);
-      // User.findByIdAndUpdate(user._id, { $set: { 'lastConnexion': Date.now() } });
-      // user.put({ _id: user._id }, { $set: { 'lastConnexion': Date.now() } });
-
       // Récupération et signature du token
       const token = authorization.signToken(user);
       res.status(200).json({
@@ -100,4 +93,17 @@ exports.signin = function (req, res, next) {
       });
     }
   })(req, res, next);
+};
+
+/**
+ * Initialisation et export de la methode signout
+ * @name {signout}
+ * @param {object} req requête HTTP
+ * @param {object} res réponse HTTP
+ * @method {get} méthode HTTP
+ * @return {function} redirect
+ */
+exports.signout = function (req, res) {
+  req.logout();
+  res.redirect('/');
 };
