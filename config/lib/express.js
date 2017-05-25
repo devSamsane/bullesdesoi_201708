@@ -16,9 +16,6 @@ const helmet = require('helmet');
 const config = require('../config');
 const logger = require('./logger');
 const authorization = require('./authorization');
-// const router = express.Router();
-const coreRoutes = require(path.resolve('./server/routes/core.server.routes'));
-const authRoutes = require(path.resolve('./server/routes/auth.server.routes'));
 
 /**
  * Initialisation et export des variables utilisées par ExpressJS
@@ -92,13 +89,6 @@ module.exports.initMiddleware = function(app) {
   // Middleware: Initialisation du répertoire statique
   app.use(express.static(path.resolve('./dist')));
 
-  app.use('./api/auth/signup', authRoutes);
-  app.use('*', coreRoutes);
-  // app.get('/', function (req, res) {
-  //   res.sendFile(path.resolve('./dist/index.html'));
-  // });
-
-
 };
 
 /**
@@ -149,9 +139,7 @@ module.exports.initHelmetHeaders = function (app) {
  * @param app
  */
 module.exports.initModulesServerRoutes = function(app) {
-  console.log(config.files.server.routes);
   config.files.server.routes.forEach(function (routePath) {
-    console.log('path: ' + routePath);
     require(path.resolve(routePath))(app);
   });
 };
@@ -198,7 +186,7 @@ module.exports.init = function(db) {
   this.initModulesConfiguration(app);
 
   // Initialisation des routes server
-  // this.initModulesServerRoutes(app);
+  this.initModulesServerRoutes(app);
 
   // Initialisation des routes error
   this.initErrorRoutes(app);

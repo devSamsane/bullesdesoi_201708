@@ -44,9 +44,9 @@ function authorizeRequest(req, res, next) {
  * @returns {object} token token signé
  */
 function signToken(user, options) {
-  const payload = undefined;
-  const token = undefined;
-  const jwtOptions = undefined;
+  let payload = undefined;
+  let token = undefined;
+  let jwtOptions = undefined;
 
   // Vérification du user
   if (!user || !user._id) {

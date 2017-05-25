@@ -134,11 +134,10 @@ UserSchema.pre('save', function (next) {
   // Vérification que le user modifie son mot de passe
   if (this.password && this.isModified('password')) {
     // Création du sel
-    const salt = bcrypt.genSalt(10);
+    const salt = bcrypt.genSaltSync(10);
     // Hashage du mot de passe
     // Utilisation de la fonction synchrone du sel du mot de passe
     const hash = bcrypt.hashSync(this.password, salt);
-
     // Sauvegarde du hash
     this.password = hash;
   }

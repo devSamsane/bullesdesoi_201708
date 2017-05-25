@@ -46,7 +46,7 @@ exports.signup = function (req, res, next) {
       });
     } else {
       // Suppression des valeurs sensibles, une fois la sauvegarde effectuée
-      user.passport = undefined;
+      user.password = undefined;
 
       // Récupération du token
       const token = authorization.signToken(user);
