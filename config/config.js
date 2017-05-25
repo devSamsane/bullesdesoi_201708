@@ -84,6 +84,27 @@ const validateDomainIsSet = function (config) {
 };
 
 /**
+ * Vérification que le jwt n'est pas celui par défaut
+ * @name validateSecretJwt
+ * @param {object} config
+ * @param {object} testing
+ */
+const validateSecretJwt = function (config, testing) {
+  if (process.env.NODE_ENV !== 'production') {
+    return true;
+  }
+  if (config.secretJwt === 'secret') {
+    if (!testing) {
+      console.log(chalk.red('Alerte: le secret JWT doit être modifié pour la production'));
+      console.log();
+    }
+    return false;
+  } else {
+    return true;
+  }
+}
+
+/**
  * Déclaration des folders de la configuration server
  * @name initGlobalConfigFolders
  * @param config
@@ -177,12 +198,16 @@ const initGlobalConfig = function () {
   // Initialisation des folders server
   initGlobalConfigFolders(config, assets);
 
+  // Validation du secret JWT
+  validateSecretJwt(config);
+
   // Validation du domain
   validateDomainIsSet(config);
 
   // Déclaration de la configuration
   config.utils = {
-    getGlobbedPaths: getGlobbedPaths
+    getGlobbedPaths: getGlobbedPaths,
+    validateSecretJwt: validateSecretJwt
   };
   return config;
 };

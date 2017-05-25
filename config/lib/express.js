@@ -15,7 +15,7 @@ const helmet = require('helmet');
 // Déclaration des fichiers de configuration
 const config = require('../config');
 const logger = require('./logger');
-const coreRoutes = require(path.resolve('./server/routes/core.server.routes'));
+const authorization = require('./authorization');
 
 /**
  * Initialisation et export des variables utilisées par ExpressJS
@@ -83,8 +83,12 @@ module.exports.initMiddleware = function(app) {
   // Middleware: Initialisation cookie-parser
   app.use(cookieParser());
 
+  // Middleware: Initialisation de l'autorisation Third-Party
+  app.use(authorization.authorize);
+
   // Middleware: Initialisation du répertoire statique
   app.use(express.static(path.resolve('./dist')));
+
 };
 
 /**
@@ -93,7 +97,7 @@ module.exports.initMiddleware = function(app) {
  * @param app
  */
 module.exports.initViewEngine = function(app) {
-  app.get('*', function (req, res) {
+  app.get('/', function (req, res) {
     res.sendFile(path.resolve('./dist/index.html)'));
   });
 };
@@ -135,7 +139,9 @@ module.exports.initHelmetHeaders = function (app) {
  * @param app
  */
 module.exports.initModulesServerRoutes = function(app) {
-  app.use('/', coreRoutes);
+  config.files.server.routes.forEach(function (routePath) {
+    require(path.resolve(routePath))(app);
+  });
 };
 
 /**
@@ -152,7 +158,7 @@ module.exports.initErrorRoutes = function (app) {
     }
     // TODO: Retirer la console quand le développement sera terminé
     console.error(err.stack);
-    return res.render('index');
+    return res.sendFile(path.resolve('./dist/index.html'));
   });
 };
 
