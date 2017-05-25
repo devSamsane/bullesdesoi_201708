@@ -9,4 +9,5 @@ const router = express.Router();
 module.exports = function (router) {
   // Route signup
   router.route('/api/auth/signup').post(users.signup);
+  router.route('/api/auth/signin').post(users.signin);
 };

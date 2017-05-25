@@ -146,6 +146,18 @@ UserSchema.pre('save', function (next) {
   next();
 });
 
+
+/**
+ * Méthode de comparaison hash vs password
+ * @name authenticate
+ * @param {string} password hash du user
+ * @returns {boolean}
+ */
+UserSchema.methods.authenticate = function (password) {
+  return bcrypt.compareSync(password, this.password);
+};
+
+
 /**
  * Génération d'une passphrase respectant les règles de l'owasp
  * Seuls sont pris en compte les tests requis de l'owasp, pas les optionnels
@@ -165,7 +177,8 @@ UserSchema.statics.generateRandomPassphrase = function () {
         numbers: true,
         symbols: true,
         uppercase: true,
-        excludeSimilarCharacters: true
+        excludeSimilarCharacters: true,
+        exclude: '"'
       });
 
       // Vérification de la nécessité de supprimer les caractères répétitifs
