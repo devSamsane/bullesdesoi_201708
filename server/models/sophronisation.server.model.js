@@ -44,4 +44,4 @@ const SophronisationSchema = new Schema({
 });
 
 // Création du model Sophronisation
-mongoose.model('Sophro', SophronisationSchema);
+mongoose.model('Sophronisation', SophronisationSchema);
