@@ -7,7 +7,9 @@ const users = require('../controllers/users.server.controller');
 const router = express.Router();
 
 module.exports = function (router) {
-  // Route signup
+
+  // Déclaration des api de l'authentification users
   router.route('/api/auth/signup').post(users.signup);
   router.route('/api/auth/signin').post(users.signin);
+  router.route('/api/auth/signout').get(users.signout);
 };
