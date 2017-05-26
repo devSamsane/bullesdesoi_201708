@@ -1,4 +1,4 @@
-// Déclaration des librairies NODEJS
+// Déclaration des librairies nodeJS
 const path = require('path');
 
 // Déclaration des librairies
