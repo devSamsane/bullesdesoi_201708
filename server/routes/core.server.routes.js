@@ -15,5 +15,9 @@ module.exports = function (router) {
     // res.render attend la définition d'un view engine
     // res.sendFile(path.resolve('./dist/index.html'));
   // });
-  router.route('*').get(renderIndex.renderIndexHTML);
+  router.route('/').get(renderIndex.renderIndexHTML);
+  // router.get('*', function (req, res, next) {
+  //   console.log('index');
+  //   res.render('index');
+  // });
 };

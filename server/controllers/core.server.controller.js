@@ -8,7 +8,7 @@ const validator = require('validator');
 const config = require(path.resolve('./config/config'));
 
 exports.renderIndexHTML = function (req, res, next) {
-  const safeUserObject = null;
+  let safeUserObject = null;
 
   // Création de l'objet safeUserObject si le user existe
   if (req.user) {
@@ -24,9 +24,8 @@ exports.renderIndexHTML = function (req, res, next) {
       additionalProvidersData: req.user.additionalProvidersData
     };
   }
-
   // Affichage du fichier index par défaut pour toutes les routes
-  res.render(path.resolve('./dist/index.html'), {
+  res.render('index', {
     user: JSON.stringify(safeUserObject),
     sharedConfig: JSON.stringify(config.shared)
   });

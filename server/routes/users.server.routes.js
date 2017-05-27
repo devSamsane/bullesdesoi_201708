@@ -6,6 +6,7 @@ const express = require('express');
 
 // Déclaration des fichiers de configuration
 const users = require(path.resolve('./server/controllers/users.server.controller'));
+// const authorize = require(path.resolve('./config/lib/authorization'));
 
 const router = express.Router();
 

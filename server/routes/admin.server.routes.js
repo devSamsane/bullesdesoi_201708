@@ -1,8 +1,14 @@
+// Déclaration des librairies nodeJS
+const path = require('path');
+
 // Déclaration des librairies
 const express = require('express');
+const passport = require('passport');
 
 // Déclaration des fichiers de configuration
 const admin = require('../controllers/admin.server.controller');
+const config = require(path.resolve('./config/config'));
+const authorize = require(path.resolve('./config/lib/authorization'));
 
 const router = express.Router();
 
@@ -17,15 +23,15 @@ module.exports = function (router) {
   // Api(s) pour un utilisateur donné
   // Gestion du profil du user
   router.route('/api/user/:userId').get(admin.readUser);
-  router.route('/api/user/:userId').put(admin.updateUser);
+  router.route('/api/user/:userId').patch(admin.updateUser);
 
   // Gestion des activités d'un user create ou update
   router.route('/api/user/seance/:userId').post(admin.addSeance);
-  router.route('/api/user/seance/:userId').put(admin.updateSeance);
+  router.route('/api/user/seance/:userId').patch(admin.updateSeance);
   router.route('/api/user/sophronisation/:seanceId').post(admin.addSophronisation);
-  router.route('/api/user/sophronisation/:sophronisationId').put(admin.updateSophronisation);
+  router.route('/api/user/sophronisation/:sophronisationId').patch(admin.updateSophronisation);
   router.route('/api/user/relaxation/:seanceId').post(admin.addRelaxation);
-  router.route('/api/user/relaxation/:relaxationId').put(admin.updateRelaxation);
+  router.route('/api/user/relaxation/:relaxationId').patch(admin.updateRelaxation);
 
   // Api(s) de suppression
   router.route('/api/user/seance/:seanceId').delete(admin.deleteSeance);

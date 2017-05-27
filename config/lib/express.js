@@ -11,6 +11,8 @@ const bodyParser = require('body-parser');
 const favicon = require('serve-favicon');
 const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
+const passport = require('passport');
+const hbs = require('express-hbs');
 
 // Déclaration des fichiers de configuration
 const config = require('../config');
@@ -83,7 +85,7 @@ module.exports.initMiddleware = function(app) {
   // Middleware: Initialisation cookie-parser
   app.use(cookieParser());
 
-  // Middleware: Initialisation de l'autorisation Third-Party
+  // Middleware: Initialisation de l'autorisation jwt
   app.use(authorization.authorize);
 
   // Middleware: Initialisation du répertoire statique
@@ -97,10 +99,19 @@ module.exports.initMiddleware = function(app) {
  * @param app
  */
 module.exports.initViewEngine = function(app) {
-  app.get('/', function (req, res) {
-    res.sendFile(path.resolve('./dist/index.html)'));
-  });
+  app.engine('hbs', hbs.express4({
+    partialsDir: '../../dist',
+    extname: '.html'
+  }));
+  app.set('view engine', 'html');
+  app.set('views', path.resolve('./dist'));
 };
+
+// module.exports.initViewEngine = function(app) {
+//   app.get('/', function (req, res) {
+//     res.render(path.resolve('./dist/index.html)'));
+//   });
+// };
 
 /**
  * Initialisation et export des modules de configuration server
@@ -152,12 +163,12 @@ module.exports.initModulesServerRoutes = function(app) {
  * @param app
  */
 module.exports.initErrorRoutes = function (app) {
-  app.use(function(err, req, res, next) {
-    if (!err) {
-      return next();
-    }
+  app.use(function(req, res, next) {
+    // if (!err) {
+      // return next();
+    // }
     // TODO: Retirer la console quand le développement sera terminé
-    console.error(err.stack);
+    // console.error(err);
     return res.sendFile(path.resolve('./dist/index.html'));
   });
 };
