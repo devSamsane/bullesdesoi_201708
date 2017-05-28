@@ -145,6 +145,17 @@ module.exports.initHelmetHeaders = function (app) {
 };
 
 /**
+ * Initialisation et export du module policy
+ * @name initModulesServerPolicies
+ * @param {any} app
+ */
+module.exports.initModulesServerPolicies = function (app) {
+  config.files.server.policies.forEach(function (policyPath) {
+    require(path.resolve(policyPath)).invokeRolesPolicies();
+  });
+};
+
+/**
  * Initialisation et export de la configuration des routes server
  * @name initModulesServerRoutes
  * @param app
@@ -195,6 +206,9 @@ module.exports.init = function(db) {
 
   // Initialisation des modules de configuration
   this.initModulesConfiguration(app);
+
+  // Initialisation du module policy
+  this.initModulesServerPolicies(app);
 
   // Initialisation des routes server
   this.initModulesServerRoutes(app);
