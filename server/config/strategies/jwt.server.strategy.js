@@ -23,15 +23,14 @@ module.exports = function (config) {
     // Création de la liste d'extracteurs
     // L'ordre correspond à l'ordre de recherche du jwt
     jwtFromRequest: ExtractJwt.fromExtractors([
-      ExtractJwt.fromAuthHeader(),
-      ExtractJwt.fromUrlQueryParameter('token')
+      ExtractJwt.fromAuthHeader()
     ]),
     secretOrKey: config.jwt.secret
   };
 
   // Configuration de la stratégie passport
   passport.use(new JwtStrategy(opts, function (jwt_payload, done) {
-    User.findOne({ _id: jwt_payload.user }, function (err, user) {
+    User.findOne({ _id: jwt_payload.sub }, function (err, user) {
       if (err) {
         return done(err, false, {
           message: 'Erreur interne'

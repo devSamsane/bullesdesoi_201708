@@ -29,7 +29,7 @@ function authorizeRequest(req, res, next) {
       return next(new Error(err));
     }
     if (user) {
-      // Mémorisation des champs dans l'objet user
+      // Mémorisation des champs dans req.user
       req.user = user;
     }
     next();
@@ -47,6 +47,7 @@ function signToken(user, options) {
   let payload = undefined;
   let token = undefined;
   let jwtOptions = undefined;
+  const timestamp = new Date().getTime();
 
   // Vérification du user
   if (!user || !user._id) {
@@ -54,7 +55,8 @@ function signToken(user, options) {
   } else {
     options = options || {};
     payload = {
-      user: user._id.toString()
+      sub: user._id.toString(),
+      iat: timestamp
     };
     jwtOptions = _.merge(config.jwt.options, options);
     token = jwt.sign(payload, config.jwt.secret, jwtOptions);

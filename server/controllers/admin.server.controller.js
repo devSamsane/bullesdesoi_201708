@@ -26,7 +26,18 @@ const whiteListedField = ['intention', 'rang', 'intitule', 'consigne', 'descript
  * @returns {object} req.model json
  */
 exports.readUser = function (req, res) {
-  res.json(req.modelUser);
+  // Vérification qu'un user est bien authentifié
+  // Récupération des valeurs req.user en provenance de authorisation
+  let isUserAuthenticated = req.user;
+
+  if (isUserAuthenticated) {
+    res.json(req.modelUser);
+  } else {
+    res.status(401).json({
+      title: 'Une authentification est nécessaire pour accéder à la ressource',
+      message: 'L\'utilisateur n\'est pas authentifié'
+    });
+  }
 };
 
 /**
@@ -38,26 +49,39 @@ exports.readUser = function (req, res) {
  * @returns {object} user
  */
 exports.updateUser = function (req, res) {
-  const user = req.modelUser;
+  // Vérification qu'un user est bien authentifié
+  // Récupération des valeurs req.user en provenance de authorisation
+  let isUserAuthenticated = req.user;
+  // Récupération du userId passé en param dans l'url (bind fait avec la déclaration middleware)
+  let userToProcess = req.modelUser
 
-  // Filtrage des champs avant de les passer au modèle
-  // Sanitize des valeurs
-  user.firstname = validator.escape(req.body.firstname);
-  user.lastname = validator.escape(req.body.lastname);
-  user.roles = validator.escape(req.body.roles);
-  user.displayName = user.firstname + ' ' + user.lastname;
-  user.updated = Date.now();
+  if (isUserAuthenticated) {
+    // Filtrage des champs avant de les passer au modèle
+    userToProcess.firstname = req.body.firstname;
+    userToProcess.lastname = req.body.lastname;
+    // userToProcess.roles = req.body.roles;
+    userToProcess.displayName = userToProcess.firstname + ' ' + userToProcess.lastname;
+    userToProcess.updated = Date.now();
 
-  user.save(function (err) {
-    if (err) {
-      return res.status(409).json({
-        title: 'La requête ne peut être traitée en l’état actuel',
-        message: err
-      });
-    } else {
-      return res.json(user);
-    }
-  });
+    userToProcess.save(function (err) {
+      if (err) {
+        return res.status(409).json({
+          title: 'La requête ne peut être traitée en l’état actuel',
+          message: err
+        });
+      } else {
+        return res.status(200).json({
+          title: 'Requête traitée avec succès',
+          message: userToProcess
+        });
+      }
+    });
+  } else {
+    res.status(401).json({
+      title: 'Une authentification est nécessaire pour accéder à la ressource',
+      message: 'L\'utilisateur n\'est pas authentifié'
+    });
+  }
 };
 
 /**
@@ -69,19 +93,30 @@ exports.updateUser = function (req, res) {
  * @returns {objet} user, user supprimé
  */
 exports.deleteUser = function (req, res) {
-  const user = req.modelUser;
+  // Vérification qu'un user est bien authentifié
+  // Récupération des valeurs req.user en provenance de authorisation
+  let isUserAuthenticated = req.user;
+  // Récupération du userId passé en param dans l'url (bind fait avec la déclaration middleware)
+  let userToProcess = req.modelUser
 
-  user.remove(function (err) {
-    if (err) {
-      return res.status(409).json({
-        title: 'La requête ne peut être traitée en l’état actuel',
-        message: err
-      });
-    } else {
-      return res.json(user);
-    }
-  });
-}
+  if (isUserAuthenticated) {
+    userToProcess.remove(function (err) {
+      if (err) {
+        return res.status(409).json({
+          title: 'La requête ne peut être traitée en l’état actuel',
+          message: err
+        });
+      } else {
+        return res.json(userToProcess);
+      }
+    });
+  } else {
+    res.status(401).json({
+      title: 'Une authentification est nécessaire pour accéder à la ressource',
+      message: 'L\'utilisateur n\'est pas authentifié'
+    });
+  }
+};
 
 /**
  * Initialisation et export de la méthode 'listUsers'
@@ -92,16 +127,27 @@ exports.deleteUser = function (req, res) {
  * @returns {object} users
  */
 exports.listUsers = function (req, res) {
-  User.find({}, '-password -providerData').sort('-created').populate('user', 'displayName').exec(function (err, users) {
-    if (err) {
-      return res.status(409).json({
-        title: 'La requête ne peut être traitée en l’état actuel',
-        message: err
-      });
-    } else {
-      return res.json(users);
-    }
-  });
+  // Vérification qu'un user est bien authentifié
+  // Récupération des valeurs req.user en provenance de authorisation
+  let isUserAuthenticated = req.user;
+
+  if (isUserAuthenticated) {
+    User.find({}, '-password -providerData').sort('-created').populate('user', 'displayName').exec(function (err, users) {
+      if (err) {
+        return res.status(409).json({
+          title: 'La requête ne peut être traitée en l’état actuel',
+          message: err
+        });
+      } else {
+        return res.json(users);
+      }
+    });
+  } else {
+    res.status(401).json({
+      title: 'Une authentification est nécessaire pour accéder à la ressource',
+      message: 'L\'utilisateur n\'est pas authentifié'
+    });
+  }
 };
 
 /**
@@ -114,40 +160,53 @@ exports.listUsers = function (req, res) {
  * @param {any} res
  */
 exports.addSeance = function (req, res) {
-  User.findById({ _id: req.model._id }, function (err, user) {
-    if (err) {
-      return res.status(500).json({
-        title: 'Erreur interne du serveur',
-        message: err
-      });
-    } else {
-      // Passage des valeurs du formulaire au model
-      const seance = new Seance(req.body);
+  // Vérification qu'un user est bien authentifié
+  // Récupération des valeurs req.user en provenance de authorisation
+  let isUserAuthenticated = req.user;
+  // Récupération du userId passé en param dans l'url (bind fait avec la déclaration middleware)
+  let userToProcess = req.modelUser
 
-      // Configuration des valeurs par le backend
-      seance.user = user._id;
+  if (isUserAuthenticated) {
+    User.findById({ _id: userToProcess._id }, function (err, user) {
+      if (err) {
+        return res.status(500).json({
+          title: 'Erreur interne du serveur',
+          message: err
+        });
+      } else {
+        // Passage des valeurs du formulaire au model
+        const seance = new Seance(req.body);
 
-      // Sauvegarde de la séance et push de l'id de seance dans le user
-      // Mongoose pré créé l'id il est donc disponible avant la création par la bd
-      seance.save(function (err, result) {
-        if (err) {
-          return res.status(500).json({
-            title: 'Erreur interne du serveur',
-            message: err
-          });
-        } else {
-          // Push de l'id seance dans le user
-          user.seances.push(result);
-          user.updated = Date.now();
-          user.save();
-          return res.status(201).json({
-            title: 'Requête traitée avec succès et création d’un document',
-            message: 'La seance a été créée et le profil utilisateur mis à jour'
-          });
-        }
-      });
-    }
-  });
+        // Configuration des valeurs par le backend
+        seance.user = user._id;
+
+        // Sauvegarde de la séance et push de l'id de seance dans le user
+        // Mongoose pré créé l'id il est donc disponible avant la création par la bd
+        seance.save(function (err, result) {
+          if (err) {
+            return res.status(500).json({
+              title: 'Erreur interne du serveur',
+              message: err
+            });
+          } else {
+            // Push de l'id seance dans le user
+            user.seances.push(result);
+            user.updated = Date.now();
+            user.save();
+            return res.status(201).json({
+              title: 'Requête traitée avec succès et création d’un document',
+              message: 'La seance a été créée et le profil utilisateur mis à jour'
+            });
+          }
+        });
+      }
+    });
+  } else {
+    res.status(401).json({
+      title: 'Une authentification est nécessaire pour accéder à la ressource',
+      message: 'L\'utilisateur n\'est pas authentifié'
+    });
+  }
 };
 
 /**
@@ -160,40 +219,51 @@ exports.addSeance = function (req, res) {
  * @param {any} res
  */
 exports.addSophronisation = function (req, res) {
-  Seance.findById({ _id: req.model._id }, function (err, seance) {
-    if (err) {
-      return res.status(500).json({
-        title: 'Erreur interne du serveur',
-        message: err
-      });
-    } else {
-      // Passage des valeurs du formulaire au model
-      const sophronisation = new Sophronisation(req.body);
+  // Vérification qu'un user est bien authentifié
+  // Récupération des valeurs req.user en provenance de authorisation
+  let isUserAuthenticated = req.user;
 
-      // Configuration des valeurs par le backend
-      sophronisation.user = seance.user;
+  if (isUserAuthenticated) {
+    Seance.findById({ _id: req.modelSeance._id }, function (err, seance) {
+      if (err) {
+        return res.status(500).json({
+          title: 'Erreur interne du serveur',
+          message: err
+        });
+      } else {
+        // Passage des valeurs du formulaire au model
+        const sophronisation = new Sophronisation(req.body);
 
-      // Sauvegarde de la sophronisation et push de l'id dans la seance
-      // Mongoose pré créé l'id il est donc disponible avant la création par la bd
-      sophronisation.save(function (err, result) {
-        if (err) {
-          return res.status(500).json({
-            title: 'Erreur interne du serveur',
-            message: err
-          });
-        } else {
-          // Push de l'id dans la seance
-          seance.sophronisation.push(result);
-          seance.updated = Date.now();
-          seance.save();
-          return res.status(201).json({
-            title: 'Requête traitée avec succès et création d’un document',
-            message: 'La sophronisation a été créée et la seance mise à jour'
-          });
-        }
-      });
-    }
-  });
+        // Configuration des valeurs par le backend
+        sophronisation.user = seance.user;
+
+        // Sauvegarde de la sophronisation et push de l'id dans la seance
+        // Mongoose pré créé l'id il est donc disponible avant la création par la bd
+        sophronisation.save(function (err, result) {
+          if (err) {
+            return res.status(500).json({
+              title: 'Erreur interne du serveur',
+              message: err
+            });
+          } else {
+            // Push de l'id dans la seance
+            seance.sophronisation.push(result);
+            seance.updated = Date.now();
+            seance.save();
+            return res.status(201).json({
+              title: 'Requête traitée avec succès et création d’un document',
+              message: 'La sophronisation a été créée et la seance mise à jour'
+            });
+          }
+        });
+      }
+    });
+  } else {
+    res.status(401).json({
+      title: 'Une authentification est nécessaire pour accéder à la ressource',
+      message: 'L\'utilisateur n\'est pas authentifié'
+    });
+  }
 };
 
 /**
@@ -206,40 +276,51 @@ exports.addSophronisation = function (req, res) {
  * @param {any} res
  */
 exports.addRelaxation = function (req, res) {
-  Seance.findById({ _id: req.model._id }, function (err, seance) {
-    if (err) {
-      return res.status(500).json({
-        title: 'Erreur interne du serveur',
-        message: err
-      });
-    } else {
-      // Passage des valeurs du formulaire au model
-      const relaxation = new Relaxation(req.body);
+  // Vérification qu'un user est bien authentifié
+  // Récupération des valeurs req.user en provenance de authorisation
+  let isUserAuthenticated = req.user;
 
-      // Configuration des valeurs par le backend
-      relaxation.user = seance.user;
+  if (isUserAuthenticated) {
+    Seance.findById({ _id: req.modelSeance._id }, function (err, seance) {
+      if (err) {
+        return res.status(500).json({
+          title: 'Erreur interne du serveur',
+          message: err
+        });
+      } else {
+        // Passage des valeurs du formulaire au model
+        const relaxation = new Relaxation(req.body);
 
-      // Sauvegarde de la relaxation et push de l'id dans la seance
-      // Mongoose pré créé l'id il est donc disponible avant la création par la bd
-      relaxation.save(function (err, result) {
-        if (err) {
-          return res.status(500).json({
-            title: 'Erreur interne du serveur',
-            message: err
-          });
-        } else {
-          // Push de l'id dans la seance
-          seance.relaxation.push(result);
-          seance.updated = Date.now();
-          seance.save();
-          return res.status(201).json({
-            title: 'Requête traitée avec succès et création d’un document',
-            message: 'La relaxation a été créée et la seance mise à jour'
-          });
-        }
-      });
-    }
-  });
+        // Configuration des valeurs par le backend
+        relaxation.user = seance.user;
+
+        // Sauvegarde de la relaxation et push de l'id dans la seance
+        // Mongoose pré créé l'id il est donc disponible avant la création par la bd
+        relaxation.save(function (err, result) {
+          if (err) {
+            return res.status(500).json({
+              title: 'Erreur interne du serveur',
+              message: err
+            });
+          } else {
+            // Push de l'id dans la seance
+            seance.relaxation.push(result);
+            seance.updated = Date.now();
+            seance.save();
+            return res.status(201).json({
+              title: 'Requête traitée avec succès et création d’un document',
+              message: 'La relaxation a été créée et la seance mise à jour'
+            });
+          }
+        });
+      }
+    });
+  } else {
+    res.status(401).json({
+      title: 'Une authentification est nécessaire pour accéder à la ressource',
+      message: 'L\'utilisateur n\'est pas authentifié'
+    });
+  }
 };
 
 /**
@@ -252,30 +333,41 @@ exports.addRelaxation = function (req, res) {
  * @returns {object} seance
  */
 exports.updateSeance = function (req, res) {
-  const seance = req.modelSeance;
+  // Vérification qu'un user est bien authentifié
+  // Récupération des valeurs req.user en provenance de authorisation
+  let isUserAuthenticated = req.user;
+  // Récupération du seanceId passé en param dans l'url (bind fait avec la déclaration middleware)
+  let seance = req.modelSeance;
 
-  if (seance) {
-    // Filtrage des champs à mettre à jour sur la liste des champs autorisés
-    seance = _.extend(seance, _.pick(req.body, whiteListedField));
+  if (isUserAuthenticated) {
+    if (seance) {
+      // Filtrage des champs à mettre à jour sur la liste des champs autorisés
+      seance = _.extend(seance, _.pick(req.body, whiteListedField));
 
-    // Passage des valeurs backend
-    seance.updated = Date.now();
+      // Passage des valeurs backend
+      seance.updated = Date.now();
 
-    // Sauvegarde de la seance dans la bd
-    seance.save(function (err) {
-      if (err) {
-        return res.status(500).json({
-          title: 'Erreur interne du serveur',
-          message: err
-        });
-      } else {
-        return res.json(seance);
-      }
-    });
+      // Sauvegarde de la seance dans la bd
+      seance.save(function (err) {
+        if (err) {
+          return res.status(500).json({
+            title: 'Erreur interne du serveur',
+            message: err
+          });
+        } else {
+          return res.json(seance);
+        }
+      });
+    } else {
+      return res.status(409).json({
+        title: 'La requête ne peut être traitée en l’état actuel',
+        message: 'La seance est inconnue'
+      });
+    }
   } else {
-    return res.status(409).json({
-      title: 'La requête ne peut être traitée en l’état actuel',
-      message: 'La seance est inconnue'
+    res.status(401).json({
+      title: 'Une authentification est nécessaire pour accéder à la ressource',
+      message: 'L\'utilisateur n\'est pas authentifié'
     });
   }
 };
@@ -290,30 +382,41 @@ exports.updateSeance = function (req, res) {
  * @returns {object} sophronisation
  */
 exports.updateSophronisation = function (req, res) {
-  const sophronisation = req.modelSophronisation;
+  // Vérification qu'un user est bien authentifié
+  // Récupération des valeurs req.user en provenance de authorisation
+  let isUserAuthenticated = req.user;
+  // Récupération du sophronisationId passé en param dans l'url (bind fait avec la déclaration middleware)
+  let sophronisation = req.modelSophronisation;
 
-  if (sophronisation) {
-    // Filtrage des champs à mettre à jour sur la liste des champs autorisés
-    sophronisation = _.extend(sophronisation, _.pick(req.body, whiteListedField));
+  if (isUserAuthenticated) {
+    if (sophronisation) {
+      // Filtrage des champs à mettre à jour sur la liste des champs autorisés
+      sophronisation = _.extend(sophronisation, _.pick(req.body, whiteListedField));
 
-    // Passage des valeurs backend
-    sophronisation.updated = Date.now();
+      // Passage des valeurs backend
+      sophronisation.updated = Date.now();
 
-    // Sauvegarde de la sophronisation dans la bd
-    sophronisation.save(function (err) {
-      if (err) {
-        return res.status(500).json({
-          title: 'Erreur interne du serveur',
-          message: err
-        });
-      } else {
-        return res.json(sophronisation);
-      }
-    });
+      // Sauvegarde de la sophronisation dans la bd
+      sophronisation.save(function (err) {
+        if (err) {
+          return res.status(500).json({
+            title: 'Erreur interne du serveur',
+            message: err
+          });
+        } else {
+          return res.json(sophronisation);
+        }
+      });
+    } else {
+      return res.status(409).json({
+        title: 'La requête ne peut être traitée en l’état actuel',
+        message: 'La sophronisation est inconnue'
+      });
+    }
   } else {
-    return res.status(409).json({
-      title: 'La requête ne peut être traitée en l’état actuel',
-      message: 'La sophronisation est inconnue'
+    res.status(401).json({
+      title: 'Une authentification est nécessaire pour accéder à la ressource',
+      message: 'L\'utilisateur n\'est pas authentifié'
     });
   }
 };
@@ -328,30 +431,41 @@ exports.updateSophronisation = function (req, res) {
  * @returns {object} relaxation
  */
 exports.updateRelaxation = function (req, res) {
-  const relaxation = req.modelRelaxation;
+  // Vérification qu'un user est bien authentifié
+  // Récupération des valeurs req.user en provenance de authorisation
+  let isUserAuthenticated = req.user;
+  // Récupération du relaxationId passé en param dans l'url (bind fait avec la déclaration middleware)
+  let relaxation = req.modelRelaxation;
 
-  if (relaxation) {
-    // Filtrage des champs à mettre à jour sur la liste des champs autorisés
-    relaxation = _.extend(relaxation, _.pick(req.body, whiteListedField));
+  if (isUserAuthenticated) {
+    if (relaxation) {
+      // Filtrage des champs à mettre à jour sur la liste des champs autorisés
+      relaxation = _.extend(relaxation, _.pick(req.body, whiteListedField));
 
-    // Passage des valeurs backend
-    relaxation.updated = Date.now();
+      // Passage des valeurs backend
+      relaxation.updated = Date.now();
 
-    // Sauvegarde de la relaxation dans la bd
-    relaxation.save(function (err) {
-      if (err) {
-        return res.status(500).json({
-          title: 'Erreur interne du serveur',
-          message: err
-        });
-      } else {
-        return res.json(relaxation);
-      }
-    });
+      // Sauvegarde de la relaxation dans la bd
+      relaxation.save(function (err) {
+        if (err) {
+          return res.status(500).json({
+            title: 'Erreur interne du serveur',
+            message: err
+          });
+        } else {
+          return res.json(relaxation);
+        }
+      });
+    } else {
+      return res.status(409).json({
+        title: 'La requête ne peut être traitée en l’état actuel',
+        message: 'La relaxation est inconnue'
+      });
+    }
   } else {
-    return res.status(409).json({
-      title: 'La requête ne peut être traitée en l’état actuel',
-      message: 'La relaxation est inconnue'
+    res.status(401).json({
+      title: 'Une authentification est nécessaire pour accéder à la ressource',
+      message: 'L\'utilisateur n\'est pas authentifié'
     });
   }
 };
@@ -367,26 +481,37 @@ exports.updateRelaxation = function (req, res) {
  * @returns {object} message
  */
 exports.deleteSophronisation = function (req, res) {
-  const sophronisation = req.modelSophronisation;
+  // Vérification qu'un user est bien authentifié
+  // Récupération des valeurs req.user en provenance de authorisation
+  let isUserAuthenticated = req.user;
+  // Récupération du sophronisationId passé en param dans l'url (bind fait avec la déclaration middleware)
+  let sophronisation = req.modelSophronisation;
 
-  if (sophronisation) {
-    sophronisation.remove(function (err) {
-      if (err) {
-        return res.status(500).json({
-          title: 'Erreur interne du serveur',
-          message: err
-        });
-      } else {
-        return res.status(200).json({
-          title: 'Requête traitée avec succès',
-          message: 'La sophronisation ' + sophronisation._id + ' est supprimée'
-        });
-      }
-    });
+  if (isUserAuthenticated) {
+    if (sophronisation) {
+      sophronisation.remove(function (err) {
+        if (err) {
+          return res.status(500).json({
+            title: 'Erreur interne du serveur',
+            message: err
+          });
+        } else {
+          return res.status(200).json({
+            title: 'Requête traitée avec succès',
+            message: 'La sophronisation ' + sophronisation._id + ' est supprimée'
+          });
+        }
+      });
+    } else {
+      return res.status(409).json({
+        title: 'La requête ne peut être traitée en l’état actuel',
+        message: 'La sophronisation est inconnue'
+      });
+    }
   } else {
-    return res.status(409).json({
-      title: 'La requête ne peut être traitée en l’état actuel',
-      message: 'La sophronisation est inconnue'
+    res.status(401).json({
+      title: 'Une authentification est nécessaire pour accéder à la ressource',
+      message: 'L\'utilisateur n\'est pas authentifié'
     });
   }
 };
@@ -402,26 +527,37 @@ exports.deleteSophronisation = function (req, res) {
  * @returns {object} message
  */
 exports.deleteRelaxation = function (req, res) {
-  const relaxation = req.modelRelaxation;
+  // Vérification qu'un user est bien authentifié
+  // Récupération des valeurs req.user en provenance de authorisation
+  let isUserAuthenticated = req.user;
+  // Récupération du relaxationId passé en param dans l'url (bind fait avec la déclaration middleware)
+  let relaxation = req.modelRelaxation;
 
-  if (relaxation) {
-    relaxation.remove(function (err) {
-      if (err) {
-        return res.status(500).json({
-          title: 'Erreur interne du serveur',
-          message: err
-        });
-      } else {
-        return res.status(200).json({
-          title: 'Requête traitée avec succès',
-          message: 'La relaxation ' + relaxation._id + ' est supprimée'
-        });
-      }
-    });
+  if (isUserAuthenticated) {
+    if (relaxation) {
+      relaxation.remove(function (err) {
+        if (err) {
+          return res.status(500).json({
+            title: 'Erreur interne du serveur',
+            message: err
+          });
+        } else {
+          return res.status(200).json({
+            title: 'Requête traitée avec succès',
+            message: 'La relaxation ' + relaxation._id + ' est supprimée'
+          });
+        }
+      });
+    } else {
+      return res.status(409).json({
+        title: 'La requête ne peut être traitée en l’état actuel',
+        message: 'La relaxation est inconnue'
+      });
+    }
   } else {
-    return res.status(409).json({
-      title: 'La requête ne peut être traitée en l’état actuel',
-      message: 'La relaxation est inconnue'
+    res.status(401).json({
+      title: 'Une authentification est nécessaire pour accéder à la ressource',
+      message: 'L\'utilisateur n\'est pas authentifié'
     });
   }
 };
@@ -437,57 +573,68 @@ exports.deleteRelaxation = function (req, res) {
  * @returns {object} message
  */
 exports.deleteSeance = function (req, res) {
-  const seance = req.modelSeance;
+  // Vérification qu'un user est bien authentifié
+  // Récupération des valeurs req.user en provenance de authorisation
+  let isUserAuthenticated = req.user;
+  // Récupération du seanceId passé en param dans l'url (bind fait avec la déclaration middleware)
+  let seance = req.modelSeance;
 
-  if (seance) {
-    if (seance.sophronisations.length > 0) {
-      seance.sophronisations.remove(seance.sophronisations[0], function (err) {
-        if (err) {
-          return res.status(500).json({
-            title: 'Erreur interne du serveur',
-            message: err
-          });
-        } else {
-          res.status(200).json({
-            title: 'Requête traitée avec succès',
-            message: 'La sophronisation de la seance est supprimée'
-          });
-        }
-      });
-    }
-    if (seance.relaxation.length > 0) {
-      seance.relaxation.remove(seance.relaxation[0], function (err) {
-        if (err) {
-          return res.status(500).json({
-            title: 'Erreur interne du serveur',
-            message: err
-          });
-        } else {
-          res.status(200).json({
-            title: 'Requête traitée avec succès',
-            message: 'La relaxation de la seance est supprimée'
-          });
-        }
-      });
-    }
-
-    seance.remove(function (err) {
-      if (err) {
-        return res.status(500).json({
-          title: 'Erreur interne du serveur',
-          message: err
-        });
-      } else {
-        return res.status(200).json({
-          title: 'Requête traitée avec succès',
-          message: 'La seance ' + seance._id + ' est supprimée'
+  if (isUserAuthenticated) {
+    if (seance) {
+      if (seance.sophronisations.length > 0) {
+        seance.sophronisations.remove(seance.sophronisations[0], function (err) {
+          if (err) {
+            return res.status(500).json({
+              title: 'Erreur interne du serveur',
+              message: err
+            });
+          } else {
+            res.status(200).json({
+              title: 'Requête traitée avec succès',
+              message: 'La sophronisation de la seance est supprimée'
+            });
+          }
         });
       }
-    });
+      if (seance.relaxation.length > 0) {
+        seance.relaxation.remove(seance.relaxation[0], function (err) {
+          if (err) {
+            return res.status(500).json({
+              title: 'Erreur interne du serveur',
+              message: err
+            });
+          } else {
+            res.status(200).json({
+              title: 'Requête traitée avec succès',
+              message: 'La relaxation de la seance est supprimée'
+            });
+          }
+        });
+      }
+
+      seance.remove(function (err) {
+        if (err) {
+          return res.status(500).json({
+            title: 'Erreur interne du serveur',
+            message: err
+          });
+        } else {
+          return res.status(200).json({
+            title: 'Requête traitée avec succès',
+            message: 'La seance ' + seance._id + ' est supprimée'
+          });
+        }
+      });
+    } else {
+      return res.status(409).json({
+        title: 'La requête ne peut être traitée en l’état actuel',
+        message: 'La seance est inconnue'
+      });
+    }
   } else {
-    return res.status(409).json({
-      title: 'La requête ne peut être traitée en l’état actuel',
-      message: 'La seance est inconnue'
+    res.status(401).json({
+      title: 'Une authentification est nécessaire pour accéder à la ressource',
+      message: 'L\'utilisateur n\'est pas authentifié'
     });
   }
 };

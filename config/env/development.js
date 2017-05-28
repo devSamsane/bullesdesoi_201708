@@ -52,6 +52,7 @@ module.exports = {
         email: process.env.MONGO_SEED_USER_EMAIL || 'user@localhost.com',
         firstname: 'User',
         lastname: 'Local',
+        phone: '000000000',
         displayName: 'User Local',
         roles: ['user']
       },
@@ -60,6 +61,7 @@ module.exports = {
         email: process.env.MONGO_SEED_ADMIN_EMAIL || 'admin@localhost.com',
         firstname: 'Admin',
         lastname: 'Local',
+        phone: '000000001',
         displayName: 'Admin Local',
         roles: ['user', 'admin']
       }

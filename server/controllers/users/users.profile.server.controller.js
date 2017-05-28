@@ -29,9 +29,13 @@ const whiteListedFields = ['firstname', 'lastname', 'email', 'phone'];
  * @returns {object} json object safe user
  */
 exports.me = function (req, res) {
+  // Vérification qu'un user est bien authentifié
+  // Récupération des valeurs req.user en provenance de authorisation
+  let user = req.user;
+  // Création d'un objet sanitize
   let safeUserObject = null;
 
-  if (req.user) {
+  if (user) {
     safeUserObject = {
       // Passage des valeurs du front par le sanitizer validator
       displayName: validator.escape(req.user.displayName),
@@ -43,7 +47,7 @@ exports.me = function (req, res) {
       phone: validator.escape(req.user.phone)
     };
   }
-  // Renvoi de l'objet safeUserObject
+  // Renvoi de l'objet safeUserObject ou null si user non authentifié
   res.json(safeUserObject || null);
 };
 
@@ -59,6 +63,8 @@ exports.me = function (req, res) {
  * @returns {object} user
  */
 exports.update = function (req, res, next) {
+  // Vérification qu'un user est bien authentifié
+  // Récupération des valeurs req.user en provenance de authorisation
   let user = req.user;
 
   if (user) {
@@ -97,6 +103,8 @@ exports.update = function (req, res, next) {
  * @returns {object} seances, liste des seances pour un user
  */
 exports.seances = function (req, res) {
+  // Vérification qu'un user est bien authentifié
+  // Récupération des valeurs req.user en provenance de authorisation
   let user = req.user;
 
   if (user) {
@@ -127,7 +135,10 @@ exports.seances = function (req, res) {
  * @returns {object} seance, la séance demandée en params
  */
 exports.seance = function (req, res) {
+  // Vérification qu'un user est bien authentifié
+  // Récupération des valeurs req.user en provenance de authorisation
   let user = req.user;
+  // Déclaration param pour accèder aux valeurs de l'url
   const param = req.params;
 
   if (user) {
