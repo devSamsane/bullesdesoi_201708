@@ -63,7 +63,7 @@ const UserSchema = new Schema({
     type: String,
     trim: true
   },
-  phone: {
+  phoneNumber: {
     type: String,
     trim: true
   },
@@ -71,9 +71,6 @@ const UserSchema = new Schema({
     type: String,
     minlength: [8, config.db.msg.String.minlength],
     required: [true, config.db.msg.general.required]
-  },
-  salt: {
-    type: String
   },
   provider: {
     type: String,
