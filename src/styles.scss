@@ -2,11 +2,11 @@
 
 @include mat-core();
 
-$bds-app-primary: mat-palette($mat-deep-purple);
-$bds-app-accent:  mat-palette($mat-lime);
-$bds-app-warn:  mat-palette($mat-pink);
+$bds-app-primary: mat-palette($mat-deep-purple, 700, A100, 900);
+$bds-app-accent:  mat-palette($mat-lime, 500, A100, 600);
+$bds-app-warn:  mat-palette($mat-pink, A100, 50, A700);
 
-$bds-app-theme: mat-light-theme($bds-app-primary, $bds-app-accent, $bds-app-warn);
+$bds-app-theme: mat-dark-theme($bds-app-primary, $bds-app-accent, $bds-app-warn);
 
 @include angular-material-theme($bds-app-theme);
 
