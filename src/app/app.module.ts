@@ -5,14 +5,20 @@ import { HttpModule } from '@angular/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FlexLayoutModule } from '@angular/flex-layout'
 
-import { MaterialModule } from './material.module';
+import { MaterialModule } from './material/material.module';
 import 'hammerjs';
 
 import { AppComponent } from './app.component';
+import { SignupComponent } from './auth/signup/signup.component';
+import { SigninComponent } from './auth/signin/signin.component';
+import { SidenavComponent } from './sidenav/sidenav.component';
 
 @NgModule({
   declarations: [
     AppComponent,
+    SignupComponent,
+    SigninComponent,
+    SidenavComponent,
   ],
   imports: [
     BrowserModule,
