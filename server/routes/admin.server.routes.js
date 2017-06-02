@@ -40,6 +40,9 @@ module.exports = function (router) {
   router.route('/api/user/relaxation/:relaxationId').delete(adminPolicy.isAllowed, admin.deleteRelaxation);
   router.route('/api/user/:userId').delete(adminPolicy.isAllowed, admin.deleteUser);
 
+  // Api(s) gestion booking
+  router.route('/api/booking').get(adminPolicy.isAllowed, admin.getAllAppointments);
+
   // Mise en place du lien middleware
   router.param('userId', admin.userById);
   router.param('seanceId', admin.seanceById);

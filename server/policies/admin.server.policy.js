@@ -18,6 +18,7 @@ exports.invokeRolesPolicies = function () {
   acl.allow('admin', '/api/user/relaxation/:relaxationId', ['patch', 'delete']);
   acl.allow('admin', '/api/user/seance/:seanceId', 'delete');
   acl.allow('admin', '/api/user/sophronisation/:sophronisationId', 'delete');
+  acl.allow('admin', '/api/booking', 'get');
 };
 
 exports.isAllowed = function (req, res, next) {
