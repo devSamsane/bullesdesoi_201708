@@ -124,6 +124,7 @@ const UserSchema = new Schema({
   }]
 });
 
+UserSchema.plugin(uniqueValidator);
 /**
  * Méthode 'pre' validate: vérification de la longueur du mot de passe avant enregistrement
  */
