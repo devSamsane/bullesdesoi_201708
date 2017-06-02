@@ -11,14 +11,14 @@ import 'hammerjs';
 import { AppComponent } from './app.component';
 import { SignupComponent } from './auth/signup/signup.component';
 import { SigninComponent } from './auth/signin/signin.component';
-import { SidenavComponent } from './sidenav/sidenav.component';
+import { HomeComponent } from './core/home/home.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     SignupComponent,
     SigninComponent,
-    SidenavComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,
