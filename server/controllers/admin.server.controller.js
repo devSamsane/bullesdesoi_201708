@@ -92,6 +92,20 @@ exports.updateUser = function (req, res) {
 };
 
 /**
+ * Initialisation et export de la méthode 'createUser'
+ * TODO: Améliorer la fonction create : Créer le user et envoyer le mot de passe par mail, réinitialiser le mot de passe à la première connexion
+ * @name deleteUser
+ * @param {any} req
+ * @param {any} res
+ * @returns {objet} user, user créée
+ */
+exports.createUser = function (req, res) {
+
+
+}
+
+
+/**
  * Initialisation et export de la méthode 'deleteUser'
  * TODO: Améliorer la fonction delete : propagation de la suppression du user dans les autres collections (issue #37)
  * @name deleteUser
@@ -133,7 +147,7 @@ exports.deleteUser = function (req, res) {
  * @param {any} res
  * @returns {object} users
  */
-exports.listUsers = function (req, res) {
+exports.listAllUsers = function (req, res) {
   // Vérification qu'un user est bien authentifié
   // Récupération des valeurs req.user en provenance de authorisation
   let isUserAuthenticated = req.user;

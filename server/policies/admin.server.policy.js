@@ -9,16 +9,19 @@ acl = new acl(new acl.memoryBackend());
  * Association du role autorisé, de la route et de la méthode http
  */
 exports.invokeRolesPolicies = function () {
-  acl.allow('admin', '/api/users/all', 'get');
-  acl.allow('admin', '/api/user/:userId', ['get', 'patch', 'delete']);
-  acl.allow('admin', '/api/user/seance/:userId', ['post', 'patch']);
-  acl.allow('admin', '/api/user/sophronisation/:seanceId', 'post');
-  acl.allow('admin', '/api/user/sophronisation/:soophronisationId', 'patch');
-  acl.allow('admin', '/api/user/relaxation/:seanceId', 'post');
-  acl.allow('admin', '/api/user/relaxation/:relaxationId', ['patch', 'delete']);
-  acl.allow('admin', '/api/user/seance/:seanceId', 'delete');
-  acl.allow('admin', '/api/user/sophronisation/:sophronisationId', 'delete');
-  acl.allow('admin', '/api/booking', 'get');
+  acl.allow('admin', '/api/users/', 'get');
+  acl.allow('admin', '/api/users/appointments/', 'get');
+  acl.allow('admin', '/api/users/:userId', ['get', 'patch', 'delete']);
+
+  acl.allow('admin', '/api/users/:userId/seances', 'post');
+  acl.allow('admin', '/api/users/:userId/seances/:seanceId', ['patch', 'delete']);
+
+  acl.allow('admin', '/api/users/:userId/seances/:seanceId/sophronisations', 'post');
+  acl.allow('admin', '/api/users/:userId/seances/:seanceId/sophronisations/:sophronisationId', ['patch', 'delete']);
+
+  acl.allow('admin', '/api/users/:userId/seances/:seanceId/relaxations', 'post');
+  acl.allow('admin', '/api/users/:userId/seances/:seanceId/relaxations/:relaxationId', ['patch', 'delete']);
+
 };
 
 exports.isAllowed = function (req, res, next) {

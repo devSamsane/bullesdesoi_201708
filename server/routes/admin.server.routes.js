@@ -19,29 +19,30 @@ module.exports = function (router) {
   require('./users.server.routes');
 
   // Récupération de la liste de tous les utilisateurs
-  router.route('/api/users/all').get(adminPolicy.isAllowed, admin.listUsers);
+  router.route('/api/users/').get(adminPolicy.isAllowed, admin.listAllUsers);
 
   // Api(s) pour un utilisateur donné
   // Gestion du profil du user
-  router.route('/api/user/:userId').get(adminPolicy.isAllowed, admin.readUser);
-  router.route('/api/user/:userId').patch(adminPolicy.isAllowed, admin.updateUser);
+  router.route('/api/users/').post(adminPolicy.isAllowed, admin.createUser);
+  router.route('/api/users/:userId').get(adminPolicy.isAllowed, admin.readUser);
+  router.route('/api/users/:userId').patch(adminPolicy.isAllowed, admin.updateUser);
 
   // Gestion des activités d'un user create ou update
-  router.route('/api/user/seance/:userId').post(adminPolicy.isAllowed, admin.addSeance);
-  router.route('/api/user/seance/:userId').patch(adminPolicy.isAllowed, admin.updateSeance);
-  router.route('/api/user/sophronisation/:seanceId').post(adminPolicy.isAllowed, admin.addSophronisation);
-  router.route('/api/user/sophronisation/:sophronisationId').patch(adminPolicy.isAllowed, admin.updateSophronisation);
-  router.route('/api/user/relaxation/:seanceId').post(adminPolicy.isAllowed, admin.addRelaxation);
-  router.route('/api/user/relaxation/:relaxationId').patch(adminPolicy.isAllowed, admin.updateRelaxation);
+  router.route('/api/users/:userId/seances/').post(adminPolicy.isAllowed, admin.addSeance);
+  router.route('/api/users/:userId/seances/:seanceId').patch(adminPolicy.isAllowed, admin.updateSeance);
+  router.route('/api/users/:userId/seances/:seanceId/sophronisations/').post(adminPolicy.isAllowed, admin.addSophronisation);
+  router.route('/api/users/:userId/seances/:seanceId/sophronisations/:sophronisationId').patch(adminPolicy.isAllowed, admin.updateSophronisation);
+  router.route('/api/users/:userId/seances/:seanceId/relaxations').post(adminPolicy.isAllowed, admin.addRelaxation);
+  router.route('/api/users/:userId/seances/:seanceId/relaxations/:relaxationId').patch(adminPolicy.isAllowed, admin.updateRelaxation);
 
   // Api(s) de suppression
-  router.route('/api/user/seance/:seanceId').delete(adminPolicy.isAllowed, admin.deleteSeance);
-  router.route('/api/user/sophronisation/:sophronisationId').delete(adminPolicy.isAllowed, admin.deleteSophronisation);
-  router.route('/api/user/relaxation/:relaxationId').delete(adminPolicy.isAllowed, admin.deleteRelaxation);
-  router.route('/api/user/:userId').delete(adminPolicy.isAllowed, admin.deleteUser);
+  router.route('/api/users/:userId/seances/:seanceId').delete(adminPolicy.isAllowed, admin.deleteSeance);
+  router.route('/api/users/:userId/seances/:seanceId/sophronisations/:sophronisationId').delete(adminPolicy.isAllowed, admin.deleteSophronisation);
+  router.route('/api/users/:userId/seances/:seanceId/relaxations/:relaxationId').delete(adminPolicy.isAllowed, admin.deleteRelaxation);
+  router.route('/api/users/:userId').delete(adminPolicy.isAllowed, admin.deleteUser);
 
   // Api(s) gestion booking
-  router.route('/api/booking').get(adminPolicy.isAllowed, admin.getAllAppointments);
+  router.route('/api/users/appintments').get(adminPolicy.isAllowed, admin.getAllAppointments);
 
   // Mise en place du lien middleware
   router.param('userId', admin.userById);
