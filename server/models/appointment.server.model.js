@@ -3,6 +3,7 @@ const path = require('path');
 
 // Déclaration des librairies
 const mongoose = require('mongoose');
+const moment = require('moment');
 const Schema = mongoose.Schema;
 
 // Déclaration des fichiers de configuration
@@ -32,36 +33,46 @@ const AppointmentSchema = new Schema({
 
 /**
  * Vérification de la validité de la date et heure de réservation
- * Ne pas prendre 2 rendez-vous sur la même plage
- * @return {object}
- */
-AppointmentSchema.path('startDateTime').validate(function (value, done) {
-  const _this = this
-
-  return mongoose.modelNames.Appointment.find({
-    '_id': { $ne: _this._id },
-    'user.id': _this.user.id,
-    $or: [
-      { startDateTime: { $lt: _this.endDateTime, $gte: _this.startDateTime } },
-      { endDateTime: { $lte: _this.endDateTime, $gt: _this.startDateTime } }
-    ]
-  }, function (err, appointments) {
-    done(!appointments || appointments.length === 0);
-  });
-}, 'Le rendez-vous est en conflit avec un autre');
-
-/**
- * Vérification de la validité de la date et heure de réservation
  * Ne pas prendre un rendez-vous dans le passé
  * @return {boolean}
  */
-AppointmentSchema.path('startDateTime').validate(function (value, done) {
-  const isValid = true;
-  if (value < new Date()) {
-    isValid = false;
-  }
-  done(isValid);
-}, 'Le rendez-vous ne peut pas être pris dans le passé');
+AppointmentSchema.path('startDateTime').validate({
+  isAsync: true,
+  validator: function (value, respond) {
+    let isValid = true;
+    if (value < new Date()) {
+      isValid = false;
+    }
+    respond(isValid);
+  },
+  message: 'Le rendez-vous ne peut pas être pris dans le passé'
+});
+
+/**
+ * Vérification de la validité de la date et heure de réservation
+ * Ne pas prendre 2 rendez-vous sur la même plage
+ */
+AppointmentSchema.path('startDateTime').validate({
+  isAsync: true,
+  validator: function (value, done) {
+
+    // FIXME: Retirer la console
+    console.log('_thisStart: ' + moment.utc(this.startDateTime));
+    console.log('_thisEnd: ' + this.endDateTime);
+    console.log('_this._id: ' + this._id);
+
+    return mongoose.models.Appointment.find({
+      '_id': { $ne: this._id },
+      $or: [
+        { startDateTime: { $lt: moment.utc(this.endDateTime), $gte: moment.utc(this.startDateTime) } },
+        { endDateTime: { $lte: moment.utc(this.endDateTime), $gt: moment.utc(this.startDateTime) } }
+      ]
+    }, function (err, appointments) {
+      done(!appointments || appointments.length === 0);
+    });
+  },
+  message: 'Le rendez-vous est en conflit avec un autre'
+});
 
 // Création du model Appointment
 mongoose.model('Appointment', AppointmentSchema);

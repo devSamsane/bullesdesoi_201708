@@ -5,14 +5,21 @@ const path = require('path');
 const mongoose = require('mongoose');
 const _ = require('lodash');
 const validator = require('validator');
+const moment = require('moment');
 
 // Déclaration des fichiers de configuration
+let Appointment = require(path.resolve('./server/models/appointment.server.model'));
+let User = require(path.resolve('./server/models/user.server.model'));
+let Seance = require(path.resolve('./server/models/seance.server.model'));
+let Relaxation = require(path.resolve('./server/models/relaxation.server.model'));
+let Sophronisation = require(path.resolve('./server/models/sophronisation.server.model'));
 
 // Initialisation des models
-const User = mongoose.model('User');
-const Seance = mongoose.model('Seance');
-const Sophronisation = mongoose.model('Sophronisation');
-const Relaxation = mongoose.model('Relaxation');
+User = mongoose.model('User');
+Seance = mongoose.model('Seance');
+Sophronisation = mongoose.model('Sophronisation');
+Relaxation = mongoose.model('Relaxation');
+Appointment = mongoose.model('Appointment');
 
 // Déclaration des champs pouvant être mis à jour par le front role=admin
 const whiteListedField = ['intention', 'rang', 'intitule', 'consigne', 'description', 'type', 'name'];
@@ -631,6 +638,39 @@ exports.deleteSeance = function (req, res) {
         message: 'La seance est inconnue'
       });
     }
+  } else {
+    res.status(401).json({
+      title: 'Une authentification est nécessaire pour accéder à la ressource',
+      message: 'L\'utilisateur n\'est pas authentifié'
+    });
+  }
+};
+
+/**
+ * Initialisation et export de la méthode getAllAppointments
+ * Retourne l'ensemble des rendez-vous pris
+ * @param {any} req
+ * @param {any} res
+ * @param {object} appointments, json object
+ */
+exports.getAllAppointments = function (req, res) {
+  // Vérification qu'un user est bien authentifié
+  // Récupération des valeurs req.user en provenance de authorisation
+  let isUserAuthenticated = req.user;
+
+  if (isUserAuthenticated) {
+    // Affichage des rendez-vous supérieur ou égal à la date du jour
+    Appointment.find({ startDateTime: { $gte: moment.utc(Date.now()) } }).sort('-startDateTime').populate('user', '-password').exec(function (err, appointments) {
+      if (err) {
+        return res.status(500).json({
+          title: 'La requête ne peut être traitée en l’état actuel',
+          message: err
+        });
+      } else {
+        console.log(appointments);
+        res.status(200).json(appointments);
+      }
+    });
   } else {
     res.status(401).json({
       title: 'Une authentification est nécessaire pour accéder à la ressource',

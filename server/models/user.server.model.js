@@ -117,6 +117,10 @@ const UserSchema = new Schema({
     type: Boolean,
     default: false
   },
+  appointments: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Appointment'
+  }],
   seances: [{
     type: Schema.Types.ObjectId,
     ref: 'Seance'
