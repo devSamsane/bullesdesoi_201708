@@ -11,14 +11,20 @@ import 'hammerjs';
 import { AppComponent } from './app.component';
 import { SignupComponent } from './auth/signup/signup.component';
 import { SigninComponent } from './auth/signin/signin.component';
-import { HomeComponent } from './core/home/home.component';
+import { HomeComponent } from './home/home.component';
+import { HeaderComponent } from './core/header/header.component';
+import { SidenavComponent } from './core/sidenav/sidenav.component';
+import { FooterComponent } from './core/footer/footer.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     SignupComponent,
     SigninComponent,
-    HomeComponent
+    HomeComponent,
+    HeaderComponent,
+    SidenavComponent,
+    FooterComponent
   ],
   imports: [
     BrowserModule,

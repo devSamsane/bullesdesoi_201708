@@ -1,0 +1,9 @@
+<md-sidenav-container>
+  <md-sidenav #sidenav mode="over" (toggleSidenav)="sidenav.toggle()">
+    <h2>Sidenav component</h2>
+  </md-sidenav>
+  <bds-header (toggleSidenav)="sidenav.toggle()" fxFlexFill></bds-header>
+  <div fxLayout="column" fxLayoutAlign="center start">
+    <bds-home fxFill></bds-home>
+  </div>
+</md-sidenav-container>
