@@ -11,7 +11,8 @@ const config = require(path.resolve('./config/config'));
 // Création du schema Sophronisation
 const SophronisationSchema = new Schema({
   user: {
-    type: Schema.Types.ObjectId
+    type: Schema.Types.ObjectId,
+    ref: 'User'
   },
   seance: {
     type: Schema.Types.ObjectId,
