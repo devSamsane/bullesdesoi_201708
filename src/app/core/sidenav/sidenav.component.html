@@ -1,9 +1,29 @@
-<md-sidenav-container>
-  <md-sidenav #sidenav mode="over" (toggleSidenav)="sidenav.toggle()">
-    <h2>Sidenav component</h2>
+<md-sidenav-container class="bds-sidenav-viewer-container">
+  <md-sidenav #sidenav mode="over" fxLayoutAlign="start stretch" fxLayout="column" class="bds-sidenav-viewer container">
+    <div fxLayout="column" class="bds-sidenav-header">
+      <div class="bds-sidenav-header-logo">
+        <img src="../../../assets/img/brand/logo-bullesdeSoi-DP500.png" alt="logo" >
+      </div>
+
+      <h2 class="bds-sidenav-header-title">Bulles de Soi</h2>
+    </div>
+
+    <!--TODO: Faire un component de la liste-->
+    <div fxLayout="column" class="bds-sidenav-nav" fxFlexFill>
+      <ul>
+        <li>test</li>
+        <li>test</li>
+        <li>test</li>
+        <li>test</li>
+        <li>test</li>
+        <li>test</li>
+        <li>test</li>
+        <li>test</li>
+      </ul>
+    </div>
   </md-sidenav>
-  <bds-header (toggleSidenav)="sidenav.toggle()" fxFlexFill></bds-header>
-  <div fxLayout="column" fxLayoutAlign="center start">
-    <bds-home fxFill></bds-home>
+  <bds-header (toggleSidenav)="sidenav.toggle()"></bds-header>
+  <div fxLayout="column" fxLayoutAlign="center start" class="bds-sidenav-content">
+    <bds-home></bds-home>
   </div>
 </md-sidenav-container>

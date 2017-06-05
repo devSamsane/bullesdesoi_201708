@@ -1,16 +1,28 @@
 @import '~@angular/material/_theming.scss';
+@import './_app-theme.scss';
 
+// Ajout material core styles
 @include mat-core();
 
-$bds-app-primary: mat-palette($mat-deep-purple, 700, A100, 900);
-$bds-app-accent:  mat-palette($mat-lime, 500, A100, 600);
-$bds-app-warn:  mat-palette($mat-pink, A100, 50, A700);
+// Définition du dark theme
+$primary: mat-palette($mat-deep-purple, 700, A100, 900);
+$accent:  mat-palette($mat-lime, 500, A100, 600);
+$warn:  mat-palette($mat-pink, A100, 50, A700);
+$background: mat-palette($mat-grey, 700);
 
-$bds-app-theme: mat-dark-theme($bds-app-primary, $bds-app-accent, $bds-app-warn);
+$theme: mat-dark-theme($primary, $accent, $warn);
 
-@include angular-material-theme($bds-app-theme);
+@include angular-material-theme($theme);
+
+// Ajout des themes components
+@include bds-sidenav-viewer-theme($theme);
 
 .md-display-1 {
   font-family: 'Roboto', regular;
   font-size: 34px;
+}
+
+body {
+  font-family: "Roboto","Helvetica Neue Light","Helvetica Neue",Helvetica,Arial,"Lucida Grande",sans-serif;
+  margin: 0;
 }

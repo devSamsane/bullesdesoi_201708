@@ -1,0 +1,20 @@
+@import '~@angular/material/_theming.scss';
+@import './app/core/sidenav/_sidenav-theme.component.scss';
+
+// Styles pour l'application bds basé sur le theme
+@mixin bds-app-theme($theme) {
+  $primary: map-get($theme, primary);
+  $accent: map-get($theme, accent);
+  $warn: map-get($theme, warn);
+  $background: map-get($theme, background);
+  $foreground: map-get($theme, foreground);
+
+  .bds-app-background {
+    background: mat-color($background, background);
+  }
+
+  // TODO: Définir les themes pour le header et le footer
+
+
+
+}

@@ -1,0 +1,30 @@
+@import '~@angular/material/_theming.scss';
+
+
+@mixin bds-sidenav-viewer-theme($theme) {
+  $primary: map-get($theme, primary);
+  $accent: map-get($theme, accent);
+  $warn: map-get($theme, warn);
+  $sidenav: '.bds-sidenav-viewer';
+
+// TODO: Rajouter ici le theme pour la sidenav et le menu
+  .bds-sidenav-viewer {
+    background-color: mat-color($primary);
+  }
+
+  .bds-sidenav-header {
+    background-color: #EDE7F6;
+    border-bottom: 1px solid #5E35B1;
+    flex-shrink: 0;
+  }
+
+  .bds-sidenav-nav {
+    background-color: #512DA8;
+  }
+
+  .bds-sidenav-header-title {
+    color: #512DA8;
+  }
+}
+
+
