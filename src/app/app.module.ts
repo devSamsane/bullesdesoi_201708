@@ -16,6 +16,8 @@ import { HeaderComponent } from './core/header/header.component';
 import { SidenavComponent } from './core/sidenav/sidenav.component';
 import { FooterComponent } from './core/footer/footer.component';
 
+import { AppRoutingModule } from './app-routing.module';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -29,6 +31,7 @@ import { FooterComponent } from './core/footer/footer.component';
   imports: [
     BrowserModule,
     FormsModule,
+    AppRoutingModule,
     HttpModule,
     BrowserAnimationsModule,
     MaterialModule,
