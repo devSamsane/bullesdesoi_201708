@@ -10,9 +10,9 @@
 
     <!--TODO: Faire un component de la liste-->
     <div fxLayout="column" class="bds-sidenav-nav" fxFlexFill>
+      <button md-button [routerLink]="['/signup']">Signup</button>
+      <button md-button [routerLink]="['/signin']">Signin</button>
       <ul>
-        <li>test</li>
-        <li>test</li>
         <li>test</li>
         <li>test</li>
         <li>test</li>
@@ -23,7 +23,8 @@
     </div>
   </md-sidenav>
   <bds-header (toggleSidenav)="sidenav.toggle()"></bds-header>
-  <div fxLayout="column" fxLayoutAlign="center start" class="bds-sidenav-content">
-    <bds-home></bds-home>
+  <div fxLayout="column" fxLayoutAlign="start stretch" class="bds-sidenav-content" fxFlexFill>
+    <router-outlet></router-outlet>
+    <bds-footer></bds-footer>
   </div>
 </md-sidenav-container>

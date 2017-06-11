@@ -1,4 +1,4 @@
-html, body {
+/*html, body {
   display: block;
 }
 
@@ -6,9 +6,20 @@ html, body, bds-root{
   margin: 0;
   min-width: 100%;
   min-height: 100%;
-}
+}*/
 
 /*bds-container {
   flex: 1 1 auto;
 }*/
 
+:host {
+  display: flex;
+  flex: 1;
+}
+
+/*bds-sidenav {
+  display: flex;
+  flex-direction: column;
+  margin: 0px;
+  height: 100%;
+}*/

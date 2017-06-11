@@ -17,6 +17,13 @@ $theme: mat-dark-theme($primary, $accent, $warn);
 // Ajout des themes components
 @include bds-sidenav-viewer-theme($theme);
 
+html, body, bds-root {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  height: 100%;
+}
+
 .md-display-1 {
   font-family: 'Roboto', regular;
   font-size: 34px;
@@ -24,5 +31,5 @@ $theme: mat-dark-theme($primary, $accent, $warn);
 
 body {
   font-family: "Roboto","Helvetica Neue Light","Helvetica Neue",Helvetica,Arial,"Lucida Grande",sans-serif;
-  margin: 0;
 }
+
