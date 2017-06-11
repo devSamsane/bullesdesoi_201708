@@ -17,6 +17,7 @@ import { SidenavComponent } from './core/sidenav/sidenav.component';
 import { FooterComponent } from './core/footer/footer.component';
 
 import { AppRoutingModule } from './app-routing.module';
+import { LogoutComponent } from './auth/logout/logout.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { AppRoutingModule } from './app-routing.module';
     HomeComponent,
     HeaderComponent,
     SidenavComponent,
-    FooterComponent
+    FooterComponent,
+    LogoutComponent
   ],
   imports: [
     BrowserModule,
