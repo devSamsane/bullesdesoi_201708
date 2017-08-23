@@ -10,7 +10,7 @@ $accent:  mat-palette($mat-lime, 500, A100, 600);
 $warn:  mat-palette($mat-pink, A100, 50, A700);
 $background: mat-palette($mat-grey, 700);
 
-$theme: mat-dark-theme($primary, $accent, $warn);
+$theme: mat-light-theme($primary, $accent, $warn);
 
 @include angular-material-theme($theme);
 
@@ -27,6 +27,11 @@ html, body, bds-root {
 .md-display-1 {
   font-family: 'Roboto', regular;
   font-size: 34px;
+}
+
+.bds-display-header {
+  font-family: "Marck Script", cursive;
+  font-weight: 400;
 }
 
 body {
